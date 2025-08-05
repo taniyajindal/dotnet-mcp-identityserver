@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Auth Server - Test Client</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .auth-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            font-family: monospace;
+            resize: vertical;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MCP Auth Server - Test Client</h1>
+        
+        <div class="auth-section">
+            <h3>Authentication</h3>
+            <input type="text" id="jwtToken" placeholder="Enter JWT Bearer Token">
+            <button onclick="testAuth()">Test Authentication</button>
+            <button onclick="getUserInfo()">Get User Info</button>
+            <button onclick="getUserDetails()">Get Full User Details</button>
+            <button onclick="getUserSummary()">Get User Summary</button>
+            <span id="authStatus" class="status disconnected">Not Authenticated</span>
+        </div>
+
+        <div class="grid">
+            <div class="section">
+                <h3>MCP Tools</h3>
+                <button onclick="getTools()">List Tools</button>
+                <button onclick="callTool('get_user_info')">Get User Info Tool</button>
+                <button onclick="callTool('get_user_claims')">Get User Claims Tool</button>
+                <button onclick="callWeatherTool()">Get Weather Tool</button>
+                <div id="toolsResponse" class="response"></div>
+            </div>
+
+            <div class="section">
+                <h3>MCP Resources</h3>
+                <button onclick="getResources()">List Resources</button>
+                <button onclick="readResource('user://profile')">Read Profile</button>
+                <button onclick="readResource('user://permissions')">Read Permissions</button>
+                <div id="resourcesResponse" class="response"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Custom API Call</h3>
+            <input type="text" id="customUrl" placeholder="API Endpoint (e.g., /api/auth/status)" value="/api/auth/status">
+            <select id="httpMethod">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+            </select>
+            <textarea id="customBody" placeholder="Request Body (JSON)"></textarea>
+            <button onclick="makeCustomCall()">Make Call</button>
+            <div id="customResponse" class="response"></div>
+        </div>
+
+        <div class="section">
+            <h3>Claude AI Chat</h3>
+            <input type="text" id="chatMessage" placeholder="Enter message for Claude" style="width: 70%;">
+            <button onclick="chatWithClaude()">Chat</button>
+            <button onclick="chatWithClaudeTools()">Chat + Tools</button>
+            <div id="chatResponse" class="response"></div>
+        </div>
+
+        <div class="section">
+            <h3>User Information</h3>
+            <button onclick="getUserClaims()">Get All Claims</button>
+            <button onclick="getApiKeyStatus()">Get API Key Status</button>
+            <div id="userResponse" class="response"></div>
+        </div>
+
+        <div class="section">
+            <h3>Server Status</h3>
+            <button onclick="getServerStatus()">Check Status</button>
+            <div id="statusResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script src="mcp-client.js"></script>
+</body>
+</html>
